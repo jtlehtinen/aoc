@@ -11,14 +11,14 @@ The input files are assumed to exist in the `/input` directory with the followin
 📦 <project root>
 └ 📂 input
    ├ 📂 2015
-   │  ├ 📜 d01.txt
-   │  ├ 📜 d02.txt
+   │  ├ 📜 01.txt
+   │  ├ 📜 02.txt
    │  ⋮
-   │  └ 📜 d25.txt
+   │  └ 📜 25.txt
    ├ 📂 2016
-   │  ├ 📜 d01.txt
-   │  ├ 📜 d02.txt
+   │  ├ 📜 01.txt
+   │  ├ 📜 02.txt
    │  ⋮
-   │  └ 📜 d25.txt
+   │  └ 📜 25.txt
    ⋮
 ```
