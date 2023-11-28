@@ -1,17 +1,25 @@
 // https://adventofcode.com/2015/day/1
 import { readFile } from '~/io.js'
 
-const part1 = (s) => {
-  return 0
+/**
+ * @param {string} s
+ * @return {number[]}
+ */
+const floorPath = (s) => {
+  const r = [0]
+  for (const c of s) {
+    const delta = c === '(' ? 1 : -1
+    r.push(r.at(-1) + delta)
+  }
+  return r
 }
 
-const part2 = (s) => {
-  return 0
-}
+const part1 = (s) => floorPath(s).at(-1)
+const part2 = (s) => floorPath(s).indexOf(-1)
 
 if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest
   const input = readFile('2015/01.txt')
-  it('part 1', () => expect(part1(input)).toBe(0))
-  it('part 2', () => expect(part2(input)).toBe(0))
+  it('part 1', () => expect(part1(input)).toBe(232))
+  it('part 2', () => expect(part2(input)).toBe(1783))
 }
