@@ -1,74 +1,56 @@
 // https://adventofcode.com/2023/day/3
 import { readFile } from '~/io.js'
 
-const pow2 = (x) => x * x
-
-const distance = (x0, x1, y, tx, ty) => {
-  if (tx < x0) return Math.sqrt(pow2(tx - x0) + pow2(ty - y))
-  if (tx > x1) return Math.sqrt(pow2(tx - x1) + pow2(ty - y))
-  return Math.abs(ty - y)
-}
-
-const getAdjacentNumbers = (numbers, x, y) => {
-  return numbers
-    .filter((n) => distance(n.x0, n.x1, n.y, x, y) < 2)
-    .map(n => n.value)
+const adjacent = (numberEntity, symbolEntity) => {
+  // Expand the number entity by one in each direction => point a in rectangle test.
+  const x0 = numberEntity.x - 1
+  const x1 = numberEntity.x + numberEntity.token.length
+  const y0 = numberEntity.y - 1
+  const y1 = numberEntity.y + 1
+  return symbolEntity.x >= x0 && symbolEntity.x <= x1 && symbolEntity.y >= y0 && symbolEntity.y <= y1
 }
 
 const parse = (s) => {
-  const lines = s.split('\n')
-  const charAt = (x, y) => lines[y]?.[x] ?? '.'
+  const entities = []
+  for (const [y, line] of s.split('\n').entries()) {
+    for (const m of line.matchAll(/\d+/g))
+      entities.push({ type: 'number', x: m.index, y, token: m[0], value: parseInt(m[0]) })
 
-  const adjToSymbol = (x, y) => {
-    for (let tx = x-1; tx <= x+1; ++tx) {
-      for (let ty = y-1; ty <= y+1; ++ty) {
-        const c = charAt(tx, ty)
-        if ((c < '0' || c > '9') && c !== '.') return true
-      }
-    }
+    for (const m of line.matchAll(/[^0-9\.]/g))
+      entities.push({ type: 'symbol', x: m.index, y, token: m[0] })
   }
-
-  const isPart = (x0, x1, y) => {
-    for (let x = x0; x <= x1; ++x) {
-      if (adjToSymbol(x, y)) return true
-    }
-    return false
-  }
-
-  const numbers = []
-  for (const [y, line] of lines.entries()) {
-    for (const m of line.matchAll(/\d+/g)) {
-      const x0 = m.index
-      const x1 = x0 + m[0].length - 1
-      numbers.push({ x0, x1, y, value: +m[0], part: isPart(x0, x1, y) })
-    }
-  }
-
-  const gears = []
-  for (const [y, line] of lines.entries()) {
-    for (const m of line.matchAll(/\*/g)) {
-      const x = m.index
-      const nums = getAdjacentNumbers(numbers, x, y)
-      if (nums.length === 2) {
-        gears.push({ x, y, ratio: nums[0] * nums[1] })
-      }
-    }
-  }
-
-  return { numbers, gears }
+  return entities
 }
 
 const part1 = (s) => {
-  return parse(s).numbers
-    .filter(({ part }) => part)
-    .map(({ value }) => value)
+  const entities = parse(s)
+  const numbers = entities.filter(e => e.type === 'number')
+  const symbols = entities.filter(e => e.type === 'symbol')
+
+  return numbers
+    .filter(n => symbols.some(s => adjacent(n, s)))
+    .map(n => n.value)
     .reduce((a, b) => a + b, 0)
 }
 
 const part2 = (s) => {
-  return parse(s).gears
-    .map(g => g.ratio)
-    .reduce((a, b) => a + b, 0)
+  const entities = parse(s)
+  const numbers = entities.filter(e => e.type === 'number')
+  const symbols = entities.filter(e => e.type === 'symbol')
+  const maybeGears = symbols.filter(s => s.token === '*')
+
+  let gearRatioSum = 0
+  for (const maybeGear of maybeGears) {
+    const adjacentNumbers = []
+    for (const number of numbers) {
+      if (adjacent(number, maybeGear))
+        adjacentNumbers.push(number.value)
+    }
+    if (adjacentNumbers.length !== 2) continue
+
+    gearRatioSum += adjacentNumbers[0] * adjacentNumbers[1]
+  }
+  return gearRatioSum
 }
 
 if (import.meta.vitest) {
