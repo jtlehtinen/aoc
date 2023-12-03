@@ -2,7 +2,7 @@
 import { readFile } from '~/io.js'
 
 const adjacent = (numberEntity, symbolEntity) => {
-  // Expand the number entity by one in each direction => point a in rectangle test.
+  // Expand the number entity by one in each direction => point in a rectangle test.
   const x0 = numberEntity.x - 1
   const x1 = numberEntity.x + numberEntity.token.length
   const y0 = numberEntity.y - 1
@@ -37,20 +37,14 @@ const part2 = (s) => {
   const entities = parse(s)
   const numbers = entities.filter(e => e.type === 'number')
   const symbols = entities.filter(e => e.type === 'symbol')
-  const maybeGears = symbols.filter(s => s.token === '*')
 
-  let gearRatioSum = 0
-  for (const maybeGear of maybeGears) {
-    const adjacentNumbers = []
-    for (const number of numbers) {
-      if (adjacent(number, maybeGear))
-        adjacentNumbers.push(number.value)
-    }
-    if (adjacentNumbers.length !== 2) continue
-
-    gearRatioSum += adjacentNumbers[0] * adjacentNumbers[1]
-  }
-  return gearRatioSum
+  return symbols
+    .filter(s => s.token === '*')
+    .map(s => {
+      const adjacentNumbers = numbers.filter(n => adjacent(n, s)).map(n => n.value)
+      return adjacentNumbers.length === 2 ? adjacentNumbers[0] * adjacentNumbers[1] : 0
+    })
+    .reduce((a, b) => a + b, 0)
 }
 
 if (import.meta.vitest) {
