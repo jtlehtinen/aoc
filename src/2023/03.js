@@ -14,7 +14,7 @@ const parse = (s) => {
   const entities = []
   for (const [y, line] of s.split('\n').entries()) {
     for (const m of line.matchAll(/\d+/g))
-      entities.push({ type: 'number', x: m.index, y, token: m[0], value: parseInt(m[0]) })
+      entities.push({ type: 'number', x: m.index, y, token: m[0], value: +m[0] })
 
     for (const m of line.matchAll(/[^0-9\.]/g))
       entities.push({ type: 'symbol', x: m.index, y, token: m[0] })

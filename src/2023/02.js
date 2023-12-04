@@ -4,10 +4,10 @@ import { readFile } from '~/io.js'
 const parseGames = (s) => {
   return s.split('\n').map(line => {
     return {
-      id: +line.match(/Game (\d+)/)[1],
-      r: Math.max(...Array.from(line.matchAll(/(\d+) red/g),   m => Number(m[1]))),
-      g: Math.max(...Array.from(line.matchAll(/(\d+) green/g), m => Number(m[1]))),
-      b: Math.max(...Array.from(line.matchAll(/(\d+) blue/g),  m => Number(m[1]))),
+      id: +line.match(/\d+/),
+      r: Math.max(...Array.from(line.matchAll(/(\d+) red/g),   m => +m[1])),
+      g: Math.max(...Array.from(line.matchAll(/(\d+) green/g), m => +m[1])),
+      b: Math.max(...Array.from(line.matchAll(/(\d+) blue/g),  m => +m[1])),
     }
   })
 }
@@ -16,7 +16,7 @@ const part1 = (s) => {
   return parseGames(s)
     .filter(({ r, g, b }) => r <= 12 && g <= 13 && b <= 14)
     .map(({ id }) => id)
-    .reduce((sum, id) => sum + id, 0)
+    .reduce((a, b) => a + b, 0)
 }
 
 const part2 = (s) => {

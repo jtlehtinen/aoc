@@ -13,7 +13,7 @@ const parse = (s) => {
 const part1 = (s) => {
   return parse(s)
     .filter(n => n > 0)
-    .map(n => 2**(n - 1))
+    .map(n => 2 ** (n - 1))
     .reduce((a, b) => a + b, 0)
 }
 
