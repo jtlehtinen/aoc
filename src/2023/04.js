@@ -1,23 +1,19 @@
 // https://adventofcode.com/2023/day/4
 import { readFile } from '~/io.js'
 
+// parse returns the number of matches for each scratchcard.
+// @param {string} s
 const parse = (s) => {
-  // We only care about the matched numbers count. Everything else
-  // is irrelevant.
-  return s.split('\n').map((line) => {
-    const [, right] = line.split(':')
-    const [prize, player] = right.split('|')
-      .map(s => s.trim().split(/\s+/).map(Number))
-
-    return player.filter(n => prize.includes(n)).length
+  return s.split('\n').map(line => {
+    const numbers = line.match(/\d+/g).slice(1)
+    return numbers.length - new Set(numbers).size
   })
 }
 
 const part1 = (s) => {
-  const matchCounts = parse(s)
-  return matchCounts
-    .filter(count => count > 0)
-    .map(count => 2**(count - 1))
+  return parse(s)
+    .filter(n => n > 0)
+    .map(n => 2**(n - 1))
     .reduce((a, b) => a + b, 0)
 }
 
@@ -25,12 +21,12 @@ const part2 = (s) => {
   const matchCounts = parse(s)
   const cardCounts = Array(matchCounts.length).fill(0)
 
-  for (const [index, matchCount] of matchCounts.entries()) {
-    cardCounts[index] += 1
+  for (const [i, matchCount] of matchCounts.entries()) {
+    cardCounts[i] += 1
 
-    const endIndex = Math.min(index + matchCount, cardCounts.length - 1)
-    for (let i = index + 1; i <= endIndex; ++i)
-      cardCounts[i] += cardCounts[index]
+    const end = Math.min(i + matchCount, cardCounts.length - 1)
+    for (let j = i + 1; j <= end; ++j)
+      cardCounts[j] += cardCounts[i]
   }
 
   return cardCounts.reduce((a, b) => a + b, 0)
