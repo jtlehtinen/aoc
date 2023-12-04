@@ -7,9 +7,9 @@ const calibrationValue = (s, words) => {
     if (s[i] >= '0' && s[i] <= '9')
       digits.push(+s[i])
 
-    for (const [index, word] of words.entries()) {
+    for (const [j, word] of words.entries()) {
       if (s.startsWith(word, i))
-        digits.push(index)
+        digits.push(j)
     }
   }
   return 10*digits[0] + digits.at(-1)
@@ -17,8 +17,8 @@ const calibrationValue = (s, words) => {
 
 const sumCalibrationValues = (s, words) => {
   return s.split('\n')
-    .map((line) => calibrationValue(line, words))
-    .reduce((sum, cur) => sum + cur, 0)
+    .map(line => calibrationValue(line, words))
+    .reduce((a, b) => a + b, 0)
 }
 
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
