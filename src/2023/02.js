@@ -2,7 +2,7 @@
 import { readFile } from '~/io.js'
 
 const parseGames = (s) => {
-  return s.split('\n').map((line) => {
+  return s.split('\n').map(line => {
     return {
       id: +line.match(/Game (\d+)/)[1],
       r: Math.max(...Array.from(line.matchAll(/(\d+) red/g),   m => Number(m[1]))),
@@ -22,7 +22,7 @@ const part1 = (s) => {
 const part2 = (s) => {
   return parseGames(s)
     .map(({ r, g, b }) => r * g * b)
-    .reduce((sum, p) => sum + p, 0)
+    .reduce((a, b) => a + b, 0)
 }
 
 if (import.meta.vitest) {
