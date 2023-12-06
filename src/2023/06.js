@@ -1,17 +1,6 @@
 // https://adventofcode.com/2023/day/6
 import { readFile } from '~/io.js'
 
-/*
-// Brute force
-const countWaysToWin = (time, record) => {
-  let r = 0
-  for (let i = 0; i <= time; ++i) {
-    if (i * (time - i) > record) r++
-  }
-  return r
-}
-*/
-
 const countWaysToWin = (time, record) => {
   // Symmetry + binary search with jumps
   let i = 0
