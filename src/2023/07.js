@@ -1,7 +1,7 @@
 // https://adventofcode.com/2023/day/7
 import { readFile } from '~/io.js'
 
-const pack = (counts) => counts[0] << 15 | counts[1] << 12 | counts[2] << 9 | counts[3] << 6 | counts[4] << 3 | counts[5]
+const pack = (counts) => counts[0] << 12 | counts[1] << 9 | counts[2] << 6 | counts[3] << 3 | counts[4]
 
 const kind = (hand) => {
   const counts = Array(15).fill(0)
@@ -17,8 +17,7 @@ const kind = (hand) => {
 }
 
 const totalWinnings = (s, withJokers) => {
-  const handBids = []
-  for (const line of s.split('\n')) {
+  const handBids = s.split('\n').map(line => {
     const [hand_, bid_] = line.split(' ')
     const hand = hand_.split('').map(c => {
       if (c === 'T') return 10
@@ -28,8 +27,8 @@ const totalWinnings = (s, withJokers) => {
       if (c === 'A') return 14
       return +c
     })
-    handBids.push({ hand, bid: +bid_, kind: kind(hand) })
-  }
+    return { hand, bid: +bid_, kind: kind(hand) }
+  })
 
   handBids.sort((a, b) => {
     if (a.kind !== b.kind)
