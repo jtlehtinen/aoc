@@ -1,7 +1,7 @@
 // https://adventofcode.com/2023/day/7
 import { readFile } from '~/io.js'
 
-const pack = (counts) => counts[0] << 20 | counts[1] << 16 | counts[2] << 12 | counts[3] << 8 | counts[4] << 4 | counts[5]
+const pack = (counts) => counts[0] << 15 | counts[1] << 12 | counts[2] << 9 | counts[3] << 6 | counts[4] << 3 | counts[5]
 
 const kind = (hand) => {
   const counts = Array(15).fill(0)
