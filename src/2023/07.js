@@ -1,33 +1,19 @@
 // https://adventofcode.com/2023/day/7
 import { readFile } from '~/io.js'
 
-const upgrades = {
-  'five of a kind':  ['five of a kind'],
-  'four of a kind':  ['four of a kind', 'five of a kind'],
-  'full house':      ['full house'],
-  'three of a kind': ['three of a kind', 'four of a kind', 'five of a kind'],
-  'two pair':        ['two pair', 'full house'],
-  'one pair':        ['one pair', 'three of a kind', 'four of a kind', 'five of a kind'],
-  'high card':       ['high card', 'one pair', 'three of a kind', 'four of a kind', 'five of a kind', 'five of a kind']
-}
-const kinds = Object.keys(upgrades)
+const pack = (counts) => counts[0] << 20 | counts[1] << 16 | counts[2] << 12 | counts[3] << 8 | counts[4] << 4 | counts[5]
 
-const kind = (hand, upgrades) => {
+const kind = (hand) => {
   const counts = Array(15).fill(0)
-  hand.forEach(v => counts[v]++)
+  hand.forEach(c => counts[c]++)
 
   const jokers = counts[0]
   counts[0] = 0
 
-  if (counts.includes(5)) return 'five of a kind'
-  if (counts.includes(4)) return upgrades['four of a kind'][jokers]
-  if (counts.includes(3)) return counts.includes(2) ? 'full house' : upgrades['three of a kind'][jokers]
+  counts.sort((a, b) => b - a)
+  counts[0] += jokers
 
-  const pairs = counts.filter(c => c === 2)
-  if (pairs.length === 2) return upgrades['two pair'][jokers]
-  if (pairs.length === 1) return upgrades['one pair'][jokers]
-
-  return upgrades['high card'][jokers]
+  return pack(counts)
 }
 
 const totalWinnings = (s, withJokers) => {
@@ -42,22 +28,18 @@ const totalWinnings = (s, withJokers) => {
       if (c === 'A') return 14
       return +c
     })
-    handBids.push({ hand, bid: +bid_, kind: kind(hand, upgrades) })
+    handBids.push({ hand, bid: +bid_, kind: kind(hand) })
   }
 
   handBids.sort((a, b) => {
-    if (a.kind === b.kind) {
-      for (let i = 0; i < 5; ++i) {
-        if (a.hand[i] !== b.hand[i]) return a.hand[i] - b.hand[i]
-      }
-      return 0
-    } else {
-      for (const kind of kinds) {
-        if (a.kind === kind) return 1
-        if (b.kind === kind) return -1
-      }
+    if (a.kind !== b.kind)
+      return a.kind - b.kind
+
+    for (let i = 0; i < 5; ++i) {
+      if (a.hand[i] !== b.hand[i])
+        return a.hand[i] - b.hand[i]
     }
-    throw new Error('unreachable')
+    return 0
   })
 
   return handBids
@@ -74,3 +56,16 @@ if (import.meta.vitest) {
   it('part 1', () => expect(part1(input)).toBe(251121738))
   it('part 2', () => expect(part2(input)).toBe(251421071))
 }
+
+/*
+
+upgrades:
+  five of a kind    =>
+  four of a kind    => five of a kind
+  full house        =>
+  three of a kind   => four of a kind => five of a kind
+  two pair          => full house
+  one pair          => three of a kind => four of a kind => five of a kind
+  high card         => one pair => three of a kind => four of a kind => five of a kind
+
+*/
