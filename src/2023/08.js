@@ -2,7 +2,7 @@
 import { readFile } from '~/io.js'
 
 const gcd = (a, b) => b ? gcd(b, a % b) : a
-const lcm = (a, b) => Math.abs(a * b) / gcd(a, b)
+const lcm = (a, b) => (a * b) / gcd(a, b)
 const lcmOfArray = (arr) => arr.reduce((a, b) => lcm(a, b))
 
 const parse = (s) => {
