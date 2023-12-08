@@ -34,8 +34,8 @@ const part1 = (s) => {
 
 const part2 = (s) => {
   const { commands, network } = parse(s)
-  const locations = Object.keys(network).filter(n => n[2] === 'A')
-  const cycleLens = locations.map(location => countSteps(commands, network, location, x => x[2] === 'Z'))
+  const locations = Object.keys(network).filter(n => n.at(-1) === 'A')
+  const cycleLens = locations.map(location => countSteps(commands, network, location, x => x.at(-1) === 'Z'))
   return lcmOfArray(cycleLens)
 }
 
