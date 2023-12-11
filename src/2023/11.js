@@ -49,7 +49,7 @@ const sumShortestPath = (map, expansion) => {
   return lenSum + (emptyColSum + emptyRowSum) * (expansion - 1)
 }
 
-const parse = (s) => s.split('\n').map(line => Array.from(line))
+const parse = (s) => s.split('\n')
 const part1 = (s) => sumShortestPath(parse(s), 2)
 const part2 = (s) => sumShortestPath(parse(s), 1000000)
 
