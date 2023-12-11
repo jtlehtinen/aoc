@@ -1,18 +1,16 @@
 // https://adventofcode.com/2023/day/11
 import { readFile } from '~/io.js'
 
-const parse = (s) => s.split('\n').map(line => Array.from(line))
-
 const sumShortestPath = (map, expansion) => {
-  const width = map[0].length
-  const height = map.length
+  const w = map[0].length
+  const h = map.length
 
   const galaxies = []
   const galaxyRows = new Set()
   const galaxyCols = new Set()
 
-  for (let y = 0; y < height; ++y) {
-    for (let x = 0; x < width; ++x) {
+  for (let y = 0; y < h; ++y) {
+    for (let x = 0; x < w; ++x) {
       if (map[y][x] === '#') {
         galaxies.push({ x, y })
         galaxyCols.add(x)
@@ -21,8 +19,13 @@ const sumShortestPath = (map, expansion) => {
     }
   }
 
+  const cumEmptyCols = new Array(w).fill(0)
+  const cumEmptyRows = new Array(h).fill(0)
+  for (let x = 0; x < w; ++x) cumEmptyCols[x] = cumEmptyCols.at(x - 1) + (galaxyCols.has(x) ? 0 : 1)
+  for (let y = 0; y < h; ++y) cumEmptyRows[y] = cumEmptyRows.at(y - 1) + (galaxyRows.has(y) ? 0 : 1)
+
   const n = galaxies.length
-  const distances = new Array(n).fill(0).map(() => new Array(n).fill(0))
+  const distances = new Array(n * n).fill(0)
 
   for (let i = 0; i < galaxies.length; ++i) {
     const a = galaxies[i]
@@ -32,27 +35,16 @@ const sumShortestPath = (map, expansion) => {
       const dx = Math.abs(a.x - b.x)
       const dy = Math.abs(a.y - b.y)
 
-      let emptyRows = 0
-      for (let y = Math.min(a.y, b.y) + 1; y < Math.max(a.y, b.y); ++y) {
-        if (!galaxyRows.has(y))
-        emptyRows++
-      }
+      const emptyCols = Math.abs(cumEmptyCols[a.x] - cumEmptyCols[b.x])
+      const emptyRows = Math.abs(cumEmptyRows[a.y] - cumEmptyRows[b.y])
 
-      let emptyCols = 0
-      for (let x = Math.min(a.x, b.x) + 1; x < Math.max(a.x, b.x); ++x) {
-        if (!galaxyCols.has(x))
-          emptyCols++
-      }
-
-      distances[i][j] = dx + dy + (emptyRows + emptyCols) * (expansion - 1)
+      distances[i + j * n] = dx + dy + (emptyCols + emptyRows) * (expansion - 1)
     }
   }
-
-  return distances
-    .flat()
-    .reduce((a, b) => a + b, 0)
+  return distances.reduce((a, b) => a + b, 0)
 }
 
+const parse = (s) => s.split('\n').map(line => Array.from(line))
 const part1 = (s) => sumShortestPath(parse(s), 2)
 const part2 = (s) => sumShortestPath(parse(s), 1000000)
 
