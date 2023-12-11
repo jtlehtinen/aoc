@@ -26,8 +26,7 @@ const findLongestLoop = (map) => {
 
   while (queue.length > 0) {
     const { x, y, path, pipe } = queue.pop()
-    const prev = path.at(-1)
-    if (prev === startPack && path.length > 1) {
+    if (path.at(-1) === startPack && path.length > 1) {
       loops.push(path)
       continue
     }
@@ -37,7 +36,7 @@ const findLongestLoop = (map) => {
     const upack = pack(x, y - 1)
     const dpack = pack(x, y + 1)
 
-    if (x > 0 && (!path.includes(lpack) || lpack === startPack)) { // left
+    if (x > 0 && (!path.includes(lpack) || lpack === startPack)) {    // left
       if (pipe === '-' || pipe === 'J' || pipe === '7' || pipe === 'S')
         queue.push({ x: x - 1, y, path: [...path, lpack], pipe: map[y][x - 1] })
     }
@@ -45,7 +44,7 @@ const findLongestLoop = (map) => {
       if (pipe === '-' || pipe === 'L' || pipe === 'F' || pipe === 'S')
         queue.push({ x: x + 1, y, path: [...path, rpack], pipe: map[y][x + 1] })
     }
-    if (y > 0 && (!path.includes(upack) || upack === startPack)) { // up
+    if (y > 0 && (!path.includes(upack) || upack === startPack)) {    // up
       if (pipe === '|' || pipe === 'L' || pipe === 'J' || pipe === 'S')
         queue.push({ x, y: y - 1, path: [...path, upack], pipe: map[y - 1][x] })
     }
