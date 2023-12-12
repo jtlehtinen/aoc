@@ -15,11 +15,6 @@ const substrCheck = (pattern, start, len, allowChars) => {
   return true
 }
 
-const setAndReturn = (memo, key, value) => {
-  memo.set(key, value)
-  return value
-}
-
 const recurse = (memo, pattern, lens, prev, pi, gi) => {
   if (pi === pattern.length)
     return Number(gi === lens.length)
@@ -27,55 +22,36 @@ const recurse = (memo, pattern, lens, prev, pi, gi) => {
   const key = (pi << 16) | (gi << 8) | prev.charCodeAt(0)
   if (memo.has(key)) return memo.get(key)
 
-  const curr = pattern[pi]
-  if (curr === '#' && prev === '#')
-    return 0
+  let count = 0
 
-  if (curr === '#' && prev === '.') {
-    return substrCheck(pattern, pi, lens[gi], '#?')
-      ? setAndReturn(memo, key, recurse(memo, pattern, lens, '#', pi + lens[gi], gi + 1))
-      : setAndReturn(memo, key, 0)
-  }
+  if (prev === '.' && pattern[pi] === '#' && substrCheck(pattern, pi, lens[gi], '#?'))
+    count += recurse(memo, pattern, lens, '#', pi + lens[gi], gi + 1)
 
-  if (curr === '.')
-    return setAndReturn(memo, key, recurse(memo, pattern, lens, '.', pi + 1, gi))
+  if (pattern[pi] === '.')
+    count += recurse(memo, pattern, lens, '.', pi + 1, gi)
 
-  if (curr === '?') {
-    let count = recurse(memo, pattern, lens, '.', pi + 1, gi)
+  if (pattern[pi] === '?') {
+    count += recurse(memo, pattern, lens, '.', pi + 1, gi)
 
     if (prev === '.' && substrCheck(pattern, pi, lens[gi], '#?'))
       count += recurse(memo, pattern, lens, '#', pi + lens[gi], gi + 1)
-
-    return setAndReturn(memo, key, count)
   }
-}
-
-const countArrangements = (pattern, lens) => {
-  const memo = new Map()
-
-  let count = 0
-  const canStartWithHash = substrCheck(pattern, 0, lens[0], '#?')
-  if (canStartWithHash)   count += recurse(memo, pattern, lens, '#', lens[0], 1)
-  if (pattern[0] === '.') count += recurse(memo, pattern, lens, '.', 1, 0)
-  if (pattern[0] === '?') count += recurse(memo, pattern, lens, '.', 1, 0)
+  memo.set(key, count)
   return count
 }
 
-const part1 = (s) => {
+const sumArrangements = (s, repeat) => {
   return parse(s)
-    .map(([pattern, lens]) => countArrangements(pattern, lens))
+    .map(([pattern, lens]) => [
+      Array(repeat).fill(pattern).join('?'),
+      Array(repeat).fill(lens).flat(),
+    ])
+    .map(([pattern, lens]) => recurse(new Map(), pattern, lens, '.', 0, 0))
     .reduce((a, b) => a + b, 0)
 }
 
-const part2 = (s) => {
-  return parse(s)
-    .map(([pattern, lens]) => [
-      Array(5).fill(pattern).join('?'),
-      Array(5).fill(lens).flat(),
-    ])
-    .map(([pattern, lens]) => countArrangements(pattern, lens))
-    .reduce((a, b) => a + b, 0)
-}
+const part1 = (s) => sumArrangements(s, 1)
+const part2 = (s) => sumArrangements(s, 5)
 
 if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest
