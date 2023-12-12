@@ -24,7 +24,7 @@ const recurse = (memo, pattern, lens, prev, pi, gi) => {
   if (pi === pattern.length)
     return Number(gi === lens.length)
 
-  const key = `${prev}:${pi}:${gi}`
+  const key = (pi << 16) | (gi << 8) | prev.charCodeAt(0)
   if (memo.has(key)) return memo.get(key)
 
   const curr = pattern[pi]
