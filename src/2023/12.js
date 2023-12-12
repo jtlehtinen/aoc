@@ -24,18 +24,15 @@ const recurse = (memo, pattern, lens, prev, pi, gi) => {
 
   let count = 0
 
-  if (prev === '.' && pattern[pi] === '#' && substrCheck(pattern, pi, lens[gi], '#?'))
+  if (prev === '.' && substrCheck(pattern, pi, lens[gi], '#?'))
     count += recurse(memo, pattern, lens, '#', pi + lens[gi], gi + 1)
 
   if (pattern[pi] === '.')
     count += recurse(memo, pattern, lens, '.', pi + 1, gi)
 
-  if (pattern[pi] === '?') {
+  if (pattern[pi] === '?')
     count += recurse(memo, pattern, lens, '.', pi + 1, gi)
 
-    if (prev === '.' && substrCheck(pattern, pi, lens[gi], '#?'))
-      count += recurse(memo, pattern, lens, '#', pi + lens[gi], gi + 1)
-  }
   memo.set(key, count)
   return count
 }
