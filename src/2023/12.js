@@ -27,10 +27,7 @@ const recurse = (memo, pattern, lens, prev, pi, gi) => {
   if (prev === '.' && substrCheck(pattern, pi, lens[gi], '#?'))
     count += recurse(memo, pattern, lens, '#', pi + lens[gi], gi + 1)
 
-  if (pattern[pi] === '.')
-    count += recurse(memo, pattern, lens, '.', pi + 1, gi)
-
-  if (pattern[pi] === '?')
+  if (pattern[pi] === '.' || pattern[pi] === '?')
     count += recurse(memo, pattern, lens, '.', pi + 1, gi)
 
   memo.set(key, count)
