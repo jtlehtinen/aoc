@@ -11,9 +11,9 @@ const hammingDistance = (a, b) => {
   return d
 }
 
-const reflectionLength = (sequence, index, expectErrors) => {
-  let L = index
-  let R = index + 1
+const reflectLen = (sequence, pivot, expectErrors) => {
+  let L = pivot
+  let R = pivot + 1
   let errors = 0
 
   while (L >= 0 && R < sequence.length && errors <= expectErrors) {
@@ -22,22 +22,7 @@ const reflectionLength = (sequence, index, expectErrors) => {
     R++
   }
 
-  return (errors === expectErrors) ? index - L : 0
-}
-
-const maxReflectionIndex = (sequences, expectErrors) => {
-  let idx = -1
-  let max = 0
-
-  for (let i = 0; i < sequences.length; ++i) {
-    const len = reflectionLength(sequences, i, expectErrors)
-    if (len > max) {
-      idx = i
-      max = len
-    }
-  }
-
-  return idx + 1
+  return (errors === expectErrors) ? pivot - L : 0
 }
 
 const summarize = (s, expectErrors) => {
@@ -51,8 +36,8 @@ const summarize = (s, expectErrors) => {
     const rows = new Array(h).fill(0).map((_, y) => map[y])
     const cols = new Array(w).fill(0).map((_, x) => map.map(row => row[x]).join(''))
 
-    hor += maxReflectionIndex(rows, expectErrors)
-    ver += maxReflectionIndex(cols, expectErrors)
+    hor += rows.findIndex((_, i) => reflectLen(rows, i, expectErrors) !== 0) + 1
+    ver += cols.findIndex((_, i) => reflectLen(cols, i, expectErrors) !== 0) + 1
   }
 
   return 100 * hor + ver
