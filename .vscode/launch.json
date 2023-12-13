@@ -24,6 +24,6 @@
       "smartStep": true,
       "console": "integratedTerminal",
       "cwd": "${workspaceRoot}"
-    },
+    }
   ]
 }
