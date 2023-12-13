@@ -11,16 +11,13 @@ const hammingDistance = (a, b) => {
   return d
 }
 
-const reflectionLength = (secuence, index, expectErrors) => {
+const reflectionLength = (sequence, index, expectErrors) => {
   let L = index
   let R = index + 1
   let errors = 0
 
-  while (L >= 0 && R < secuence.length) {
-    errors += hammingDistance(secuence[L], secuence[R])
-    if (errors > expectErrors)
-      return 0
-
+  while (L >= 0 && R < sequence.length && errors <= expectErrors) {
+    errors += hammingDistance(sequence[L], sequence[R])
     L--
     R++
   }
@@ -33,10 +30,10 @@ const maxReflectionIndex = (sequences, expectErrors) => {
   let max = 0
 
   for (let y = 0; y < sequences.length; ++y) {
-    let count = reflectionLength(sequences, y, expectErrors)
-    if (count > max) {
+    const len = reflectionLength(sequences, y, expectErrors)
+    if (len > max) {
       idx = y
-      max = count
+      max = len
     }
   }
 
@@ -52,7 +49,7 @@ const summarize = (s, expectErrors) => {
     const h = map.length
 
     const rows = new Array(h).fill(0).map((_, y) => map[y])
-    const cols = new Array(w).fill(0).map((_, x) => map.map(row => row[x]))
+    const cols = new Array(w).fill(0).map((_, x) => map.map(row => row[x]).join(''))
 
     hor += maxReflectionIndex(rows, expectErrors)
     ver += maxReflectionIndex(cols, expectErrors)
