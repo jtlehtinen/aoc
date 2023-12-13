@@ -29,10 +29,10 @@ const maxReflectionIndex = (sequences, expectErrors) => {
   let idx = -1
   let max = 0
 
-  for (let y = 0; y < sequences.length; ++y) {
-    const len = reflectionLength(sequences, y, expectErrors)
+  for (let i = 0; i < sequences.length; ++i) {
+    const len = reflectionLength(sequences, i, expectErrors)
     if (len > max) {
-      idx = y
+      idx = i
       max = len
     }
   }
