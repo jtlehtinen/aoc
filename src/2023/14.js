@@ -61,7 +61,7 @@ const part2 = (s) => {
     const key = JSON.stringify(map)
     if (cache.has(key)) {
       const period = cycle - cache.get(key)
-      while (cycle + period <= 1000000000) cycle += period
+      cycle += Math.floor((1000000000 - cycle) / period) * period
     }
     cache.set(key, cycle)
   }
