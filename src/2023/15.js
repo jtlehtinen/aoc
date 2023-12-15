@@ -4,14 +4,9 @@ import { readFile } from '~/io.js'
 /**
  * @param {string} s
  */
-const hash = (s) => {
-  let h = 0
-  for (let i = 0; i < s.length; ++i) {
-    h = (h + s.charCodeAt(i)) * 17
-    h %= 256
-  }
-  return h
-}
+const hash = (s) => Array
+  .from(s)
+  .reduce((h, c) => ((h + c.charCodeAt(0)) * 17) & 0xff, 0)
 
 const part1 = (s) => s
   .split(',')
@@ -19,32 +14,24 @@ const part1 = (s) => s
   .reduce((a, b) => a + b, 0)
 
 const part2 = (s) => {
-  const boxes = Array.from({ length: 256 }, () => [])
+  const boxes = Array.from({ length: 256 }, () => new Map())
 
   for (const kv of s.split(',')) {
     if (kv.includes('=')) {
       const [k, v] = kv.split('=')
-      const box = boxes[hash(k)]
-      const boxIdx = box.findIndex(({ key }) => key === k)
-
-      if (boxIdx !== -1) {
-        box[boxIdx] = { key: k, value: Number(v) }
-      } else {
-        box.push({ key: k, value: Number(v) })
-      }
+      boxes[hash(k)].set(k, Number(v))
     } else {
       const k = kv.slice(0, -1) // remove trailing '-'
-      const h = hash(k)
-      boxes[h] = boxes[h].filter(({ key }) => key !== k)
+      boxes[hash(k)].delete(k)
     }
   }
 
   return boxes
-    .map((box, boxIdx) => {
-      return box
-        .map(({ value }, lensIdx) => (boxIdx + 1) * (lensIdx + 1) * value)
+    .map((box, i) =>
+      Array.from(box.keys())
+        .map((key, j) => (i + 1) * (j + 1) * box.get(key))
         .reduce((a, b) => a + b, 0)
-    })
+    )
     .reduce((a, b) => a + b, 0)
 }
 
