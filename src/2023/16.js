@@ -18,33 +18,26 @@ const simulate = (map, startX, startY, dx, dy) => {
     his.add(state)
     vis.add(pack2(x, y))
 
-    const c = map[y][x]
-    if (c === '.') {
-      q.push({ x: x + dx, y: y + dy, dx, dy })
-    } else if (c === '/') {
-      if (dx ===  1)      q.push({ x: x, y: y - 1, dx:  0, dy: -1 })
-      else if (dx === -1) q.push({ x: x, y: y + 1, dx:  0, dy:  1 })
-      else if (dy ===  1) q.push({ x: x - 1, y: y, dx: -1, dy:  0 })
-      else if (dy === -1) q.push({ x: x + 1, y: y, dx:  1, dy:  0 })
-    } else if (c === '\\') {
-      if (dx ===  1)      q.push({ x: x, y: y + 1, dx:  0, dy:  1 })
-      else if (dx === -1) q.push({ x: x, y: y - 1, dx:  0, dy: -1 })
-      else if (dy ===  1) q.push({ x: x + 1, y: y, dx:  1, dy:  0 })
-      else if (dy === -1) q.push({ x: x - 1, y: y, dx: -1, dy:  0 })
-    } else if (c === '|') {
-      if (dy === 1 || dy === -1) {
-        q.push({ x: x + dx, y: y + dy, dx, dy })
-      } else {
-        q.push({ x: x, y: y - 1, dx: 0, dy: -1 })
-        q.push({ x: x, y: y + 1, dx: 0, dy:  1 })
-      }
-    } else if (c === '-') {
-      if (dx === 1 || dx === -1) {
-        q.push({ x: x + dx, y: y + dy, dx, dy })
-      } else {
-        q.push({ x: x - 1, y: y, dx: -1, dy: 0 })
-        q.push({ x: x + 1, y: y, dx:  1, dy: 0 })
-      }
+    switch (map[y][x]) {
+      case '.':  q.push({ x: x + dx, y: y + dy, dx:  dx, dy:  dy }); break
+      case '/':  q.push({ x: x - dy, y: y - dx, dx: -dy, dy: -dx }); break
+      case '\\': q.push({ x: x + dy, y: y + dx, dx:  dy, dy:  dx }); break
+      case '|':
+        if (dy === 1 || dy === -1) { // parallel with pipe
+          q.push({ x: x, y: y + dy, dx: dx, dy: dy })
+        } else {
+          q.push({ x: x, y: y - 1, dx: 0, dy: -1 })
+          q.push({ x: x, y: y + 1, dx: 0, dy:  1 })
+        }
+        break
+      case '-':
+        if (dx === 1 || dx === -1) { // parallel with pipe
+          q.push({ x: x + dx, y: y, dx: dx, dy: dy })
+        } else {
+          q.push({ x: x - 1, y: y, dx: -1, dy: 0 })
+          q.push({ x: x + 1, y: y, dx:  1, dy: 0 })
+        }
+        break
     }
   }
   return vis.size
