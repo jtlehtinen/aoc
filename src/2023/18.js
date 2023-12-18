@@ -42,6 +42,10 @@ const solve = (s, parseFunc) => {
     edgeLen += Math.abs(verts[i].x - verts[i-1].x)
     edgeLen += Math.abs(verts[i].y - verts[i-1].y)
   }
+
+  // To make this work for other thicknesses use the following formula:
+  // (edgeLen * thickness / 2) + (thickness / 2) ** 2 * 4
+
   return polyArea(verts) + edgeLen / 2 + 1
 }
 
