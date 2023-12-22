@@ -2,7 +2,6 @@
 import { readFile } from '~/io.js'
 
 const xmin = 0, ymin = 1, zmin = 2, xmax = 3, ymax = 4, zmax = 5
-
 const parse = (s) => s.split('\n').map(line => line.match(/\d+/g).map(Number))
 
 const intersect2d = (a, b) => {
@@ -13,71 +12,58 @@ const intersect2d = (a, b) => {
 
 const fall = (bricks) => {
   for (let i = 0; i < bricks.length; ++i) {
-    const a = bricks[i]
-
-    let zfall = a[zmin]
+    let zfall = bricks[i][zmin]
     for (let j = i - 1; j >= 0; --j) {
-      const b = bricks[j]
-      if (intersect2d(a, b))
-        zfall = Math.min(zfall, a[zmin] - b[zmax] - 1)
+      if (intersect2d(bricks[i], bricks[j]))
+        zfall = Math.min(zfall, bricks[i][zmin] - bricks[j][zmax] - 1)
     }
-    a[zmin] -= zfall
-    a[zmax] -= zfall
+    bricks[i][zmin] -= zfall
+    bricks[i][zmax] -= zfall
   }
 }
 
-// @returns {number} The number of other bricks that would disintegrate.
-const disintegrate = (bricks, omit, startIdx) => {
-  for (let i = startIdx; i < bricks.length; ++i) {
-    const a = bricks[i]
-
-    let supported = (bricks[i][zmin] === 0)
-    for (let j = i - 1; j >= 0 && !supported; --j) {
-      const b = bricks[j]
-      if (!omit.has(j) && intersect2d(a, b) && a[zmin] - 1 === b[zmax])
-        supported = true
-    }
-
-    if (!supported)
-      omit.add(i)
+const supporters = (bricks, i) => {
+  let supportedBy = []
+  for (let j = i - 1; j >= 0; --j) {
+    if (intersect2d(bricks[i], bricks[j]) && bricks[i][zmin] - 1 === bricks[j][zmax])
+      supportedBy.push(j)
   }
-  return omit.size - 1
+  return supportedBy
 }
 
 const part1 = (s) => {
   const bricks = parse(s)
-
   bricks.sort((a, b) => a[zmin] - b[zmin])
   fall(bricks)
-  bricks.sort((a, b) => a[zmin] - b[zmin])
 
-  const cantRemove = new Set()
+  const keep = new Set()
   for (let i = 0; i < bricks.length; ++i) {
-    const a = bricks[i]
-
-    let supportedBy = []
-    for (let j = i - 1; j >= 0 && supportedBy.length < 2; --j) {
-      const b = bricks[j]
-      if (intersect2d(a, b) && a[zmin] - 1 === b[zmax])
-        supportedBy.push(j)
-    }
-
+    const supportedBy = supporters(bricks, i)
     if (supportedBy.length === 1)
-      cantRemove.add(supportedBy[0])
+      keep.add(supportedBy[0])
   }
-  return bricks.length - cantRemove.size
+  return bricks.length - keep.size
 }
 
 const part2 = (s) => {
   const bricks = parse(s)
-
   bricks.sort((a, b) => a[zmin] - b[zmin])
   fall(bricks)
-  bricks.sort((a, b) => a[zmin] - b[zmin])
 
-  return bricks
-    .map((_, idx) => disintegrate(bricks, new Set([idx]), idx + 1))
-    .reduce((a, b) => a + b, 0)
+  const support = new Map()
+  bricks.forEach((_, i) => support.set(i, supporters(bricks, i)))
+
+  let sum = 0
+  for (let i = 0; i < bricks.length; ++i) {
+    const disintegrated = new Set([i])
+    for (let j = i + 1; j < bricks.length; ++j) {
+      const supportedBy = support.get(j)
+      if (bricks[j][zmin] !== 0 && (supportedBy.length === 0 || supportedBy.every(k => disintegrated.has(k))))
+        disintegrated.add(j)
+    }
+    sum += disintegrated.size - 1
+  }
+  return sum
 }
 
 if (import.meta.vitest) {
