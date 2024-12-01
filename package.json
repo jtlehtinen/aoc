@@ -3,17 +3,17 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "vitest --watch 2023/01",
+    "test": "vitest --watch 2024/01",
     "test:run": "vitest run",
     "input:encrypt": "node tools/aoc.js -- -enc",
     "input:decrypt": "node tools/aoc.js -- -dec"
   },
   "devDependencies": {
-    "vite": "^5.0.12",
-    "vitest": "^1.2.2"
+    "vite": "^6.0.1",
+    "vitest": "^2.1.6"
   },
   "dependencies": {
-    "dotenv": "^16.4.1",
-    "z3-solver": "^4.12.5"
+    "dotenv": "^16.4.5",
+    "z3-solver": "^4.13.3"
   }
 }
