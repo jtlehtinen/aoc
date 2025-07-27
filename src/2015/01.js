@@ -5,7 +5,7 @@ import { readFile } from '~/io.js'
  * @param {string} s
  * @return {number[]}
  */
-const floorPath = (s) => {
+const floors = (s) => {
   const r = [0]
   for (const c of s) {
     const delta = c === '(' ? 1 : -1
@@ -14,8 +14,8 @@ const floorPath = (s) => {
   return r
 }
 
-const part1 = (s) => floorPath(s).at(-1)
-const part2 = (s) => floorPath(s).indexOf(-1)
+const part1 = (s) => floors(s).at(-1)
+const part2 = (s) => floors(s).indexOf(-1)
 
 if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest
