@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "vitest --watch 2024/01",
+    "test": "vitest --watch 2015/01",
     "test:run": "vitest run",
     "input:encrypt": "node tools/aoc.js -- -enc",
     "input:decrypt": "node tools/aoc.js -- -dec"
