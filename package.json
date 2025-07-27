@@ -9,11 +9,11 @@
     "input:decrypt": "node tools/aoc.js -- -dec"
   },
   "devDependencies": {
-    "vite": "^7.0.3",
+    "vite": "^7.0.6",
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.1",
     "z3-solver": "^4.15.2"
   }
 }
