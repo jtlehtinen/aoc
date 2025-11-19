@@ -8,9 +8,4 @@ export default defineConfig({
     }
   },
   clearScreen: true,
-  test: {
-    globals: false,
-    threads: false,
-    includeSource: ['src/**/*.js']
-  },
 })

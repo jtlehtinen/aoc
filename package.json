@@ -5,15 +5,18 @@
   "scripts": {
     "test": "vitest --watch 2015/01",
     "test:run": "vitest run",
-    "input:encrypt": "node tools/aoc.js -- -enc",
-    "input:decrypt": "node tools/aoc.js -- -dec"
-  },
-  "devDependencies": {
-    "vite": "^7.0.6",
-    "vitest": "^3.2.4"
+    "input:encrypt": "tsx tools/aoc.ts -- -enc",
+    "input:decrypt": "tsx tools/aoc.ts -- -dec"
   },
   "dependencies": {
-    "dotenv": "^17.2.1",
-    "z3-solver": "^4.15.2"
+    "dotenv": "^17.2.3",
+    "z3-solver": "^4.15.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vitest": "^4.0.10"
   }
 }

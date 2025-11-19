@@ -3,10 +3,6 @@ import path from 'node:path'
 
 const BASE_PATH = 'input'
 
-/**
- * @param {string} relativePath
- * @return {string}
- */
-export function readFile(relativePath) {
+export function readFile(relativePath: string): string {
   return fs.readFileSync(path.join(BASE_PATH, relativePath)).toString()
 }
