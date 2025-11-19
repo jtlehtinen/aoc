@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "dotenv": "^17.2.3",
+    "remeda": "^2.32.0",
     "z3-solver": "^4.15.4"
   },
   "devDependencies": {
