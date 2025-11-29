@@ -1,39 +1,34 @@
 // https://adventofcode.com/2015/day/2
 import { readFile } from '~/io.js'
 
-/**
- * @param {string} s
- * @return {Array<number[]>} [l, w, h]
- */
-const parseDimensions = (s) => s.split('\n').map(line => line.split('x').map(Number))
+type Dimension = [length: number, width: number, height: number]
+type Dimensions = Dimension[]
+type CostFunc = (dim: Dimension) => number
 
-/**
- * @param {number[]} dimensions [l, w, h]
- * @return {number}
- */
-const costWrapper = ([l, w, h]) => {
+function parseDimensions(s: string): Dimensions {
+  return s.split('\n').map(line => line.split('x').map(Number)) as Dimensions
+}
+
+function costWrapper([l, w, h]: Dimension) {
   const area = 2 * (l*w + w*h + h*l)
   const smallestSideArea = Math.min(l*w, w*h, h*l)
   return area + smallestSideArea
 }
 
-/**
- * @param {number[]} dimensions [l, w, h]
- * @return {number}
- */
-const costRibbon = ([l, w, h]) => {
+function costRibbon([l, w, h]: Dimension) {
   const volume = l * w * h
   const smallestPerimeter = 2 * Math.min(l+w, w+h, h+l)
   return volume + smallestPerimeter
 }
 
-const cost = (dimensions, costFunc) =>
-  dimensions
+function cost(dimensions: Dimensions, costFunc: CostFunc) {
+  return dimensions
     .map(costFunc)
     .reduce((sum, cur) => sum + cur, 0)
+}
 
-const part1 = (s) => cost(parseDimensions(s), costWrapper)
-const part2 = (s) => cost(parseDimensions(s), costRibbon)
+const part1 = (s: string) => cost(parseDimensions(s), costWrapper)
+const part2 = (s: string) => cost(parseDimensions(s), costRibbon)
 
 if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest
