@@ -10,8 +10,8 @@ Per [Advent of Code about page](https://adventofcode.com/about), input files are
 
 Set the `AOC_INPUT_ENCRYPTION_KEY` environment variable.
 
-- **Decrypt**: `pnpm run input:decrypt`
-- **Encrypt**: `pnpm run input:encrypt`
+- **Decrypt**: `bun run input:decrypt`
+- **Encrypt**: `bun run input:encrypt`
 
 ### Input directory structure
 
